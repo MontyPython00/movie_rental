@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+    <div style="text-align:center;">
+    <h1>
+        Profile: {{user_name}}
+    </h1>
+    {% for movie in object_list %}
+    <p>
+        <a href="{% url 'movie:detail' movie.id %}" style="font-size:20px;">
+            {{movie.title}}
+        </a>
+    </p>
+    {% endfor %}
+    </div>
+
+{% if request.user.username == user_name %}
+    <div style="text-align: center;">
+
+        <h1> Requested movies </h1>
+        {% for requested_movie in requested_movies %}
+        <p>
+            <a href="{% url 'movie:requests_update' requested_movie.id %}" style="font-size:20px;">{{requested_movie.movie.title}} </a> 
+        </p>
+        <p>
+            Name of user: <a href="{% url 'movie:profile' requested_movie.user_request %}" style="font-size:20px;">{{requested_movie.user_request}} </a>
+        </p>
+        {% endfor %}
+
+    </div>
+{% endif %}
+{% endblock %}
+

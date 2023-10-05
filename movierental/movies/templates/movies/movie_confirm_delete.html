@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<form method="POST" style="text-align:center">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Delete" style="background-color: red; color:white; border-radius:50%; height:200px; width:200px;">
+</form>
+
+{% endblock %}

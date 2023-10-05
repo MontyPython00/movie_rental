@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+<div style="text-align: center;">
+    <h1> Title: {{object.title}}</h1>
+    <h3> Description: {{object.description}}</h3>
+    
+    <h3> Age: {{object.get_age_display}}</h3>
+
+    <h3> Category: {{object.get_category_display}}</h3>
+    {% if object.owner == request.user %}
+    <a href="{% url 'movie:update' object.id %}">Update</a>
+    <a href="{{object.delete_url}}">Delete</a>
+    {% else %}
+        {% if user.is_authenticated and not is_requested %}
+            <form method="POST" style="margin-top: 30px;">
+                {% csrf_token %}
+                {{form.as_p}}
+                <input type="submit" value="Rent a movie">
+            </form>
+        {% else %}
+            Waiting for response from owner.
+        {% endif %}
+    {% endif %}
+</div>
+
+
+{% endblock %}

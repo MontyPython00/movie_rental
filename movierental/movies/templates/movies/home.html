@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+<h1 style="text-align: center;"> Movies </h1>
+
+    {% for movie in object_list %}
+    <div style="text-align:center; margin-bottom: 30px;">      
+        <a style="font-size:20px;" href="{{ movie.get_absolute_url}}">{{movie.title}}</a> <!-- zamien to pozniej na javascripta zeby caly div odnosil-->
+        {{movie.content}}
+    </div>
+    {% endfor %}
+    <form method="GET" style="text-align:center; margin-bottom: 30px;">
+        <input type="search" name="q">
+        <input type="submit" value="Search">
+    </form> 
+
+{% endblock %}

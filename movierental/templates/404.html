@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+{{ exception }}
+<h1> Page is not found. Make sure inserted url is correct</h1>
+<h2> Come back to <a href="{% url 'movie:home' %}"> home page </a> </h2>
+
+{% endblock %}

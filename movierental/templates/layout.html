@@ -1,0 +1,27 @@
+<html>
+    <head>
+    <title>
+        Movie Rental
+    </title>
+    {% block head %}
+
+    {% endblock %}
+    </head>
+    <body>
+    <div style="display:flex; justify-content:space-around; text-align: center; margin-bottom:30px;">
+        <div style="display:inline-block"><a href="{% url 'movie:home' %}"> Home </a></div>
+        {% if user.is_authenticated %}
+            <div style="display:inline-block"><a href="{% url 'movie:create' %}"> New movie </a></div>
+            <div style="display:inline-block"><a href="{% url 'movie:profile' request.user %}"> Profile </a></div>
+        {% else %}
+            <div style="display:inline-block"><a href="{% url 'accounts:register' %}"> Register </a></div>
+            <div style="display:inline-block"><a href="{% url 'accounts:login' %}"> Login </a></div>
+        {% endif %}
+        <div style="display:inline-block"><a href="{% url 'accounts:logout'  %}"> Logout </a></div> 
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+    </body>
+</html>

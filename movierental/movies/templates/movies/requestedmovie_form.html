@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div style="text-align:center; margin-top:100px;">
+        <h1>Title: {{movie_title}}</h1>
+        <h1>Request of user: {{request_of_user}}</h1>
+    
+        <form method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Update">
+
+        </form>
+    </div>
+
+{% endblock %}
