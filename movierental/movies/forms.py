@@ -13,4 +13,4 @@ class MovieForm(forms.ModelForm):
 class RequestedMovieForm(forms.ModelForm):
     class Meta:
         model = RequestedMovie
-        fields = []
+        fields = ['time']

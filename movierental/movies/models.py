@@ -21,6 +21,7 @@ class MoviesQuerySet(models.QuerySet):
         return qs
     
     
+    
 
 
 class MoviesManager(models.Manager):
@@ -30,8 +31,8 @@ class MoviesManager(models.Manager):
     def search(self, query):
         return self.get_queryset().search(query)
     
-    def all(self):
-        return self.get_queryset().all()
+    def all_without_rented(self):
+        return self.get_queryset().filter(rented=False)
 
 
 class Movie(models.Model):
@@ -62,25 +63,25 @@ class RentedMovie(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='movie_owner')
     holder = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     movie = models.ForeignKey(Movie, on_delete=models.SET_NULL, null=True, blank=False)
+    valid_to = models.DateTimeField(null=True)
+    expired_movie = models.BooleanField(default=False)
 
-
+#Zamiast tworzyc nowy model mozna dodac pozycje automatyczna przy approved A/D i czytac jako historia 
 class RequestedMovie(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     user_request = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='user_request')
     movie = models.ForeignKey(Movie, on_delete=models.SET_NULL, null=True)
-    
     approved_choices = [('A', 'Approved'), ('Q', 'Queue',), ('D', 'Declined')]
-
     approved = models.CharField(max_length=16 ,choices=approved_choices, default='Q')
+    time = models.DateTimeField()
     
 
 @receiver(post_save, sender=RequestedMovie)
 def updated_request(sender, instance, **kwargs):
-    print(instance.movie)
     if instance.approved == 'Q':
         pass
     elif instance.approved == 'A':
-        RentedMovie.objects.create(owner=instance.owner, holder=instance.user_request, movie=instance.movie)
+        RentedMovie.objects.create(owner=instance.owner, holder=instance.user_request, movie=instance.movie, valid_to=instance.time)
         instance.movie.rented = True
         instance.movie.save()
         instance.delete()
@@ -92,6 +93,3 @@ def updated_request(sender, instance, **kwargs):
 
 
 
-#Data spreader by wykonywal rentedMovie
-# W glownym modelu dodac uzytkownika ktory posiada film
-# Zrobic data spreadera aby przy kupnie na nowym modelu wysylal do danego modelu aktualizacje wlasciwosci

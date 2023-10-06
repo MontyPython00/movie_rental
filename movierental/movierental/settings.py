@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'movierental.custom_middleware.SimpleMiddleWare',
 ]
 
 ROOT_URLCONF = 'movierental.urls'

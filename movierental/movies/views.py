@@ -10,6 +10,7 @@ from movies.forms import MovieForm, RequestedMovieForm
 from movies.models import Movie, RequestedMovie, RentedMovie
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.db.models import Q
 
 # Create your views here.
 
@@ -23,7 +24,7 @@ class MovieListView(generic.ListView):
         if value:
             qs = Movie.objects.search(value)
         else:
-            qs = Movie.objects.all()
+            qs = Movie.objects.all_without_rented()
         
         return qs
 
@@ -35,7 +36,9 @@ class UserProfileView(generic.ListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         requested_movies = RequestedMovie.objects.filter(owner=self.request.user)
+        rented_movies = RentedMovie.objects.filter(owner=self.request.user).filter(expired_movie=False)
         context['requested_movies'] = requested_movies
+        context['rented_movies'] = rented_movies
         context['user_name'] = self.username
         return context
 
@@ -63,9 +66,15 @@ class RequestedMovieUpdateView(generic.UpdateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['movie_title'] = self.object.movie.title
+        context['movie'] = self.object
         context['request_of_user'] = self.object.user_request
         return context
+
+
+class RentedMovieUpdateView(generic.UpdateView):
+    model = RentedMovie
+    fields = []
+
 
 class MovieCreateView(generic.CreateView):
     model = Movie
@@ -86,9 +95,7 @@ class MovieDetailView(FormMixin, generic.DetailView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        is_requested = RequestedMovie.objects.filter(user_request=self.request.user).exists()
-        #dodaj rented movies
-        #popraw funkcje movie.objects.all
+        is_requested = RequestedMovie.objects.filter(user_request=self.request.user).filter(movie=self.object).exists()
         context['is_requested'] = True if is_requested else False
         return context
 

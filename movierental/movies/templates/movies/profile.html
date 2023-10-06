@@ -17,18 +17,29 @@
     </div>
 
 {% if request.user.username == user_name %}
-    <div style="text-align: center;">
-
-        <h1> Requested movies </h1>
-        {% for requested_movie in requested_movies %}
-        <p>
-            <a href="{% url 'movie:requests_update' requested_movie.id %}" style="font-size:20px;">{{requested_movie.movie.title}} </a> 
-        </p>
-        <p>
-            Name of user: <a href="{% url 'movie:profile' requested_movie.user_request %}" style="font-size:20px;">{{requested_movie.user_request}} </a>
-        </p>
-        {% endfor %}
-
+    <div style="display:flex; justify-content:space-around;">
+        <div style="display:inline-block; text-align: center;">
+            <h1> Requested movies </h1>
+            {% for requested_movie in requested_movies %}
+            <p>
+                <a href="{% url 'movie:requests_update' requested_movie.id %}" style="font-size:20px;">{{requested_movie.movie.title}} </a> 
+            </p>
+            <p>
+                Request from: <a href="{% url 'movie:profile' requested_movie.user_request %}" style="font-size:20px;">{{requested_movie.user_request}} </a>
+            </p>
+            {% endfor %}
+        </div>
+        <div style="display:inline-block; text-align: center;">
+            <h1> Rented Movies </h1>
+            {% for rented_movie in rented_movies %}
+            <p>    
+                <a href='#' style='font-size:20px;'>{{rented_movie.movie.title}}</a>
+            </p>
+            <p>
+                Name of holder: <a href="{% url 'movie:profile' rented_movie.holder %}" style="font-size:20px;">{{rented_movie.holder}} </a>
+            </p>
+            {% endfor %}
+        </div>
     </div>
 {% endif %}
 {% endblock %}
